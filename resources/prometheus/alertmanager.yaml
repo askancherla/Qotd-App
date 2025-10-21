@@ -1,0 +1,41 @@
+﻿global:
+  resolve_timeout: 5m
+  http_config:
+    tls_config:
+      insecure_skip_verify: true
+inhibit_rules:
+  - equal:
+      - namespace
+      - alertname
+    source_matchers:
+      - severity = critical
+    target_matchers:
+      - severity =~ warning|info
+  - equal:
+      - namespace
+      - alertname
+    source_matchers:
+      - severity = warning
+    target_matchers:
+      - severity = info
+receivers:
+  - name: Default
+  - name: webhook-integration
+    webhook_configs:
+      - url: >-
+          <webhook route>
+route:
+  receiver: Default
+  repeat_interval: 40s
+  group_wait: 30s
+  group_interval: 40s
+  group_by:
+    - alertname
+  routes:
+    - receiver: webhook-integration
+      match:
+        namespace: qotd
+
+
+
+

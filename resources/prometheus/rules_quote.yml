@@ -1,0 +1,58 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: qotd-quote-alerts
+  namespace: qotd
+spec:
+  groups:
+  - name: quote
+    rules:
+    - alert: QuoteVeryHighRequestLatency
+      expr: sum(rate(http_request_duration_seconds_sum{container="qotd-quote",method="GET",route="/quotes/#val",status="2XX"}[1m])) / sum(rate(http_request_duration_seconds_count{container="qotd-quote",method="GET",route="/quotes/#val",status="2XX"}[1m])) > 0.5
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Quote service response time over past minute is significantly high (> 1.0s)
+        expiryTime: "300"
+    - alert: QuoteResponse5xxTooHigh
+      expr: sum(rate(http_requests_total{container="qotd-quote",method="GET",route="/quotes/#val",status="5XX"}[1m])) / sum(rate(http_requests_total{container="qotd-quote",method="GET",route="/quotes/#val",status="2XX"}[1m])) > 0.3
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Quote service reponds with 5xx status far more than expected.
+        expiryTime: "300"
+    - alert: QuoteResponse4xxTooHigh
+      expr: sum(rate(http_requests_total{container="qotd-quote",method="GET",route="/quotes/#val",status="4XX"}[1m])) / sum(rate(http_requests_total{container="qotd-quote",method="GET",route="/quotes/#val",status="2XX"}[1m])) > 0.3
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Quote service reponds with 4xx status far more than expected.
+        expiryTime: "300"
+    - alert: QuoteVeryHighCPUUsage
+      expr: rate(process_cpu_user_seconds_total{container="qotd-quote"}[1m]) > 0.05
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Quote service CPU usage very high 
+        expiryTime: "300"
+    - alert: QuoteVeryHighMemoryUsage
+      expr: nodejs_heap_size_used_bytes{container="qotd-quote"} > 50000000
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Quote service Mem usage very high
+        expiryTime: "300"
+    - alert: QuoteServiceDown
+      expr: (up{container="qotd-quote"} OR on() vector(0)) != 1
+      for: 20s
+      labels:
+        severity: Critical
+      annotations:
+        summary: Quote service down.
+        expiryTime: "300"
+

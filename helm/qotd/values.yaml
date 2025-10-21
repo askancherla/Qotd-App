@@ -1,0 +1,22 @@
+host: localhost
+enableInstana: false
+supplyChainUrl: ""
+supplyChainSimulate: true
+instanaReportingUrl: ""
+instanaEnumMinJsUrl: ""
+instanaKey: ""
+branding: "Quote of the Day"
+
+dbPort: 3306
+
+appNamespace: qotd
+loadNamespace: qotd-load
+
+useNodePort: false
+
+setDefaultLoggers: false
+
+imageTag: "v5.1.0"
+
+autoShutoff: true
+

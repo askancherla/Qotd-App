@@ -1,0 +1,16 @@
+stages:
+  - build
+
+build:
+  image: registry.gitlab.com/quote-of-the-day/quote-of-the-day:latest
+  stage: build
+  script:
+    - helm package ./helm/qotd
+    - 'helm plugin install https://github.com/chartmuseum/helm-push.git'
+    - 'helm repo add --username "$CI_REGISTRY_USER" --password "$CI_REGISTRY_PASSWORD" qotd ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/stable'
+    - 'helm cm-push ./qotd-*.tgz qotd'
+
+    
+
+
+

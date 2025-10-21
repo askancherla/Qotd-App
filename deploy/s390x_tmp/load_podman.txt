@@ -1,0 +1,4 @@
+podman run --name qotd-load \
+    -e QOTD_WEB_HOST="http://qotd-web-qotd.apps.atsocpd2.dmz/"          
+    registry.gitlab.com/quote-of-the-day/qotd-load-generator/v4.1.0:latest
+

@@ -1,0 +1,81 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: qotd-web-alerts
+  namespace: qotd
+spec:
+  groups:
+  - name: web
+    rules:
+    - alert: WebVeryHighRequestLatencyDailyQuote
+      expr: sum(rate(http_request_duration_seconds_sum{container="qotd-web",method="GET",route="/",status="2XX"}[1m])) / sum(rate(http_request_duration_seconds_count{container="qotd-web",method="GET",route="/",status="2XX"}[1m])) > 2.0
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Web service response time (for daily quote) over past minute is significantly high (> 2.0s)
+        expiryTime: "300"
+    - alert: WebVeryHighCPUUsage
+      expr: rate(process_cpu_seconds_total{container="qotd-web"}[1m]) > 0.05
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Web service CPU usage very high 
+        expiryTime: "300"
+    - alert: WebVeryHighMemoryUsage
+      expr: nodejs_heap_size_used_bytes{container="qotd-web"} > 50000000
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Web service Mem usage very high
+        expiryTime: "300"
+    - alert: WebServiceDown
+      expr: (up{container="qotd-web"} OR on() vector(0)) != 1
+      for: 20s
+      labels:
+        severity: Critical
+      annotations:
+        summary: Web service down.
+        expiryTime: "300"
+    - alert: WebVeryHighRequestLatencyRandomQuote
+      expr: sum(rate(http_request_duration_seconds_sum{container="qotd-web",method="GET",route="/random",status="2XX"}[1m])) / sum(rate(http_request_duration_seconds_count{container="qotd-web",method="GET",route="/random",status="2XX"}[1m])) > 0.8
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Web service response time over past minute is significantly high (> 1.0s)
+        expiryTime: "300"
+    - alert: WebDailyResponse5xxTooHigh
+      expr: sum(rate(http_requests_total{container="qotd-web",method="GET",route="/",status="5XX"}[1m])) / sum(rate(http_requests_total{container="qotd-web",method="GET",route="/",status="2XX"}[1m])) > 0.3
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Web Daily service reponds with 5xx status far more than expected.
+        expiryTime: "300"
+    - alert: WebDailyResponse4xxTooHigh
+      expr: sum(rate(http_requests_total{container="qotd-web",method="GET",route="/",status="4XX"}[1m])) / sum(rate(http_requests_total{container="qotd-web",method="GET",route="/",status="2XX"}[1m])) > 0.3
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Web Daily service reponds with 4xx status far more than expected.
+        expiryTime: "300"
+    - alert: WebRandomResponse5xxTooHigh
+      expr: sum(rate(http_requests_total{container="qotd-web",method="GET",route="/random",status="5XX"}[1m])) / sum(rate(http_requests_total{container="qotd-web",method="GET",route="/random",status="2XX"}[1m])) > 0.3
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Web Random service reponds with 5xx status far more than expected.
+        expiryTime: "300"
+    - alert: WebRandomResponse4xxTooHigh
+      expr: sum(rate(http_requests_total{container="qotd-web",method="GET",route="/random",status="4XX"}[1m])) / sum(rate(http_requests_total{container="qotd-web",method="GET",route="/random",status="2XX"}[1m])) > 0.3
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Web Random service reponds with 4xx status far more than expected.
+        expiryTime: "300"

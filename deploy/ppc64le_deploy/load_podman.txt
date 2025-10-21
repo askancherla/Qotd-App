@@ -1,0 +1,44 @@
+podman run --name qotd-load \
+    -e QOTD_WEB_HOST="http://qotd-web-qotd.apps.atsocpd2.dmz/"          
+    registry.gitlab.com/quote-of-the-day/qotd-load-generator/v4.1.0:latest
+
+podman build -t quay.io/jconallen_us/qotd-author-service/ppc64le:v4.1.0 --platform=linux/ppc64le .
+podman build -t quay.io/jconallen_us/qotd-engraving-service/ppc64le:v4.1.0 --platform=linux/ppc64le .
+podman build -t quay.io/jconallen_us/qotd-image-service/ppc64le:v4.1.0 --platform=linux/ppc64le .
+podman build -t quay.io/jconallen_us/qotd-pdf-service/ppc64le:v4.1.0 --platform=linux/ppc64le .
+podman build -t quay.io/jconallen_us/qotd-quote-service/ppc64le:v4.1.0 --platform=linux/ppc64le .
+podman build -t quay.io/jconallen_us/qotd-ratings-service/ppc64le:v4.1.0 --platform=linux/ppc64le .
+podman build -t quay.io/jconallen_us/qotd-web-service/ppc64le:v4.1.0 --platform=linux/ppc64le .
+podman build -t quay.io/jconallen_us/qotd-db-service/ppc64le:v4.1.0 --platform=linux/ppc64le .
+
+podman build -t quay.io/jconallen_us/qotd-usecase-generator-service/ppc64le:v4.1.0 --platform=linux/ppc64le .
+
+podman build -t quay.io/jconallen_us/qotd-load-generator/ppc64le:v4.1.0 --platform=linux/ppc64le .
+
+
+podman push quay.io/jconallen_us/qotd-author-service/ppc64le:v4.1.0 
+podman push quay.io/jconallen_us/qotd-engraving-service/ppc64le:v4.1.0 
+podman push quay.io/jconallen_us/qotd-image-service/ppc64le:v4.1.0 
+podman push quay.io/jconallen_us/qotd-pdf-service/ppc64le:v4.1.0 
+podman push quay.io/jconallen_us/qotd-quote-service/ppc64le:v4.1.0 
+podman push quay.io/jconallen_us/qotd-ratings-service/ppc64le:v4.1.0 
+podman push quay.io/jconallen_us/qotd-web-service/ppc64le:v4.1.0 
+podman push quay.io/jconallen_us/qotd-db-service/ppc64le:v4.1.0
+
+podman push quay.io/jconallen_us/qotd-usecase-generator-service/ppc64le:v4.1.0 
+
+podman tag quay.io/jconallen_us/qotd-author-service/ppc64:v4.1.0 quay.io/jconallen_us/qotd-author-service/ppc64le:v4.1.0 
+podman tag quay.io/jconallen_us/qotd-engraving-service/ppc64:v4.1.0 quay.io/jconallen_us/qotd-engraving-service/ppc64le:v4.1.0 
+podman tag quay.io/jconallen_us/qotd-image-service/ppc64:v4.1.0 quay.io/jconallen_us/qotd-image-service/ppc64le:v4.1.0 
+podman tag quay.io/jconallen_us/qotd-pdf-service/ppc64:v4.1.0 quay.io/jconallen_us/qotd-pdf-service/ppc64le:v4.1.0 
+podman tag quay.io/jconallen_us/qotd-quote-service/ppc64:v4.1.0 quay.io/jconallen_us/qotd-quote-service/ppc64le:v4.1.0 
+podman tag quay.io/jconallen_us/qotd-ratings-service/ppc64:v4.1.0 quay.io/jconallen_us/qotd-ratings-service/ppc64le:v4.1.0 
+podman tag quay.io/jconallen_us/qotd-web-service/ppc64:v4.1.0 quay.io/jconallen_us/qotd-web-service/ppc64le:v4.1.0 
+podman tag quay.io/jconallen_us/qotd-db-service/ppc64:v4.1.0 quay.io/jconallen_us/qotd-db-service/ppc64le:v4.1.0
+
+podman tag quay.io/jconallen_us/qotd-usecase-generator/ppc64:v4.1.0 quay.io/jconallen_us/qotd-usecase-generator-service/ppc64le:v4.1.0 
+
+
+podman push quay.io/jconallen_us/qotd-usecase-generator/ppc64le:v4.1.0 
+
+podman tag quay.io/jconallen_us/qotd-usecase-generator-service/ppc64le:v4.1.0 quay.io/jconallen_us/qotd-usecase-generator/ppc64le:v4.1.0 

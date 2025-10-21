@@ -1,0 +1,89 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: qotd-author-alerts
+  namespace: qotd
+spec:
+  groups:
+  - name: author
+    rules:
+    - alert: AuthorVeryHighRequestLatency
+      expr: sum(rate(http_request_duration_seconds_sum{container="qotd-author",method="GET",route="/authors/#val",status="2XX"}[1m])) / sum(rate(http_request_duration_seconds_count{container="qotd-author",method="GET",route="/authors/#val",status="2XX"}[3m]))  > 0.5
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Author service response time over past minute is significantly high (> 0.5s)
+        expiryTime: "300"
+    - alert: AuthorVeryHighCPUUsage
+      expr: rate(process_cpu_seconds_total{container="qotd-author"}[1m]) > 0.020
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Author service CPU usage very high 
+        expiryTime: "300"
+    - alert: AuthorVeryHighMemoryUsage
+      expr: nodejs_heap_size_used_bytes{container="qotd-author"} > 60000000
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Author service Mem usage very high
+        expiryTime: "300"
+    - alert: AuthorServiceDown
+      expr: (up{container="qotd-author"} OR on() vector(0)) != 1
+      for: 20s
+      labels:
+        severity: Critical
+      annotations:
+        summary: Author service down.
+        expiryTime: "300"
+    - alert: AuthorBioVeryHighRequestLatency
+      expr: sum(rate(http_request_duration_seconds_sum{container="qotd-author",method="GET",route="/authors/#val",status="2XX"}[1m])) / sum(rate(http_request_duration_seconds_count{container="qotd-author",method="GET",route="/authors/#val",status="2XX"}[1m])) > 0.5
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Author bio service response time over past minute is significantly high (> 1.0s)
+        expiryTime: "300"
+    - alert: AuthorBioResponse5xxTooHigh
+      expr: sum(rate(http_requests_total{container="qotd-author",method="GET",route="/authors/#val",status="5XX"}[1m])) / sum(rate(http_requests_total{container="qotd-author",method="GET",route="/authors/#val",status="2XX"}[1m])) > 5
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Author bio service reponds with 5xx status far more than expected.
+        endpoint: "GET /authors/#val"
+    - alert: AuthorBioResponse4xxTooHigh
+      expr: sum(rate(http_requests_total{container="qotd-author",method="GET",route="/authors/#val",status="4XX"}[1m])) / sum(rate(http_requests_total{container="qotd-author",method="GET",route="/authors/#val",status="2XX"}[1m])) > 5
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Author bio service reponds with 4xx status far more than expected.
+        expiryTime: "300"
+    - alert: AuthorImageVeryHighRequestLatency
+      expr: sum(rate(http_request_duration_seconds_sum{container="qotd-author",method="GET",route="/images/#val",status="2XX"}[1m])) / sum(rate(http_request_duration_seconds_count{container="qotd-author",method="GET",route="/images/#val",status="2XX"}[1m])) > 0.5
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Author image service response time over past minute is significantly high (> 1.0s)
+        expiryTime: "300"
+    - alert: AuthorImageResponse5xxTooHigh
+      expr: sum(rate(http_requests_total{container="qotd-author",method="GET",route="/images/#val",status="5XX"}[1m])) / sum(rate(http_requests_total{container="qotd-author",method="GET",route="/images/#val",status="2XX"}[1m])) > 0.3
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Author image service reponds with 5xx status far more than expected.
+        endpoint: "GET /images/#val"
+    - alert: AuthorImageResponse4xxTooHigh
+      expr: sum(rate(http_requests_total{container="qotd-author",method="GET",route="/images/#val",status="4XX"}[1m])) / sum(rate(http_requests_total{container="qotd-author",method="GET",route="/images/#val",status="2XX"}[1m])) > 0.3
+      for: 1m
+      labels:
+        severity: Critical
+      annotations:
+        summary: Author bio service reponds with 4xx status far more than expected.
+        expiryTime: "300"
