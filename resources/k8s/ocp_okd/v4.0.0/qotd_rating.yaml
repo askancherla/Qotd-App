@@ -19,7 +19,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: qotd-rating
-          image: registry.gitlab.com/quote-of-the-day/qotd-ratings-service:v5.1.0
+          image: quay.io/amashargah/amashargahitops:1762200479-cve20222068
           imagePullPolicy: Always
           ports:
             - name: http
