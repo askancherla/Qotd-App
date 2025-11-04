@@ -1,4 +1,4 @@
-JENKINS CHANGES TEST
+ JENKINS CHANGES TEST v1
 # Quote of the Day - Version 5.1.0
 
 The Quote of the Day (QotD) application is demonstration micro-service application, designed specifically for use with IBM Watson AIOps and Instana.  It is optionally instrumented for Instana, and provides Prometheus compatible metrics.
