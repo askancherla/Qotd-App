@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: qotd-rating
-  namespace: amashargah-dev
+  namespace: saikancherla
   labels:
     app: qotd
     tier: api
@@ -19,7 +19,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: qotd-rating
-          image: quay.io/amashargah/amashargahitops:1762341797-cve202422025
+          image: quay.io/sai_kancherla/bootcamp:1762360812-cve20222068
           imagePullPolicy: Always
           ports:
             - name: http
@@ -62,7 +62,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: qotd-rating
-  namespace: amashargah-dev
+  namespace: saikancherla
   labels:
     app: qotd
     tier: api
@@ -80,7 +80,7 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: qotd-rating
-  namespace: amashargah-dev
+  namespace: saikancherla
   labels:
     app: qotd
     tier: web
